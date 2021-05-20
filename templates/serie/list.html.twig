@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2> LISTE</h2>
+
+    {% if currentPage > 1 %}
+    <a href="{{ path('serie_list', {'page':currentPage-1}) }}"> previous page</a>
+    {% endif %}
+
+
+    <a href="{{ path('serie_list', {'page':currentPage+1}) }}"> next page</a>
+
+
+  {% for serie in series %}
+      <div>
+
+          <a href="{{ path('serie_detail', {'id':serie.id}) }}" title="View Series details">
+          <img src="{{ asset('img/posters/series/'~serie.poster) }}" alt = "{{ serie.name }}">
+          {{ serie.name }}
+
+          </a>
+
+      </div>
+
+    {%  endfor %}
+
+{% endblock %}
+
+{% block title %}
+    {{ parent() }}
+
+{% endblock %}
+

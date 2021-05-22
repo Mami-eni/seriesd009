@@ -3,6 +3,17 @@
 {% block body %}
     <h2> CREATION</h2>
 
+
+    {# {{ form(form) }} method d'affichage form qui prend en aprametre le formulaire passer en parametre dans le controller #}
+    <div>
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button>  envoyer </button>
+
+        {{ form_end(form) }}
+    </div>
+
 {% endblock %}
 
 {% block title %} {{ parent() }}

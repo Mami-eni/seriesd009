@@ -1,5 +1,21 @@
 html
 {
-    background-color: #B0413E;
+    background-color: wheat;
 
+
+label
+
+
+{
+    display: flex;
+}
+
+.flash
+{
+    padding: 28px;
+    font-weight: bold;
+    font-size: 1.4rem;
+    margin: 1rem 0;
+    border-radius: 55px;
+    color: blue;
 }

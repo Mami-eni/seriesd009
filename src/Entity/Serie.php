@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\SerieRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=SerieRepository::class)
@@ -26,22 +27,28 @@ class Serie
     }
 
     /**
+     * @Assert\NotBlank(message="Please provide a name")
+     * @Assert\Length(min=2, max=255, minMessage="minimum 2 caracteres", maxMessage=" maximum 255 " )
      * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
+     *  @Assert\Length(min=2, max=3000, minMessage="minimum 2 caracteres", maxMessage=" maximum 3000 " )
      * @ORM\Column(type="text", nullable=true)
      */
     private $overview;
 
     /**
+     * @Assert\Choice(choices={"cancelled", "returned","ended"})
      * @ORM\Column(type="string", length=50)
      */
     private $status;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+
+     * @Assert\Range(min="0",max="10",notInRangeMessage=" pas connu au bataillon")
+,     * @ORM\Column(type="decimal", precision=3, scale=1)
      */
     private $vote;
 
@@ -55,12 +62,13 @@ class Serie
      */
     private $genre;
 
-    /**
+    /**@Assert(DatetimeInterface)
      * @ORM\Column(type="date")
      */
     private $firstAirDate;
 
     /**
+     * @Assert\GreaterThan(propertyPath="firstAirDate", message="the last must be greater")
      * @ORM\Column(type="date")
      */
     private $lastAirDate;

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Serie;
 use App\Form\SerieType;
 use App\Repository\SerieRepository;
+use Container0kof7Lt\getMaker_Renderer_FormTypeRendererService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,5 +82,59 @@ class SerieController extends AbstractController
             "form"=>$serieForm->createView()
 
         ]);
+    }
+
+    /**
+     * @Route("/series/edit/{id}", name="serie_edit")
+     * @param $id
+     * @return Response
+     */
+    public function edit($id, EntityManagerInterface  $entityManager, SerieRepository $serieRepository, Request $request): Response
+    {
+        $serie = $serieRepository->find($id);
+        if(!$serie)
+        {
+            throw $this->createNotFoundException("this series doesn't exists");
+        }
+        $serieForm = $this->createForm(SerieType::class, $serie);
+        $serieForm->handleRequest($request);
+
+        if($serieForm->isSubmitted() && $serieForm->isValid())
+        {
+            $entityManager->persist($serie);
+            $entityManager->flush();
+            $this->addFlash('success','serie edited !!');
+
+            return $this->redirectToRoute('serie_detail', ['id'=>$serie->getId()]);
+        }
+
+
+
+        return $this->render('serie/edit.html.twig', [
+            "serie" => $serie,
+            "form" =>$serieForm->createView()
+        ]);
+
+
+
+    }
+
+    /**
+     * @Route("/series/delete/{id}", name="serie_delete")
+     * @param $id
+     * @return Response
+     */
+    public function delete($id, EntityManagerInterface  $entityManager, SerieRepository $serieRepository): Response
+    {
+        $serie = $serieRepository->find($id);
+        if(!$serie)
+        {
+            throw $this->createNotFoundException("this series doesn't exists");
+        }
+
+        $entityManager->remove($serie);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('main_home');
     }
 }

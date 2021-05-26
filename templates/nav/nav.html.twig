@@ -3,8 +3,25 @@
         <li> <a href="{{ path('main_home') }} "> home</a></li>
         <li> <a href="{{ path('main_test') }}"> test</a></li>
         <li> <a href="{{ path('serie_list', {'page':1}) }}"> all series</a></li>
+
+        {% if app.user %}
+
         <li> <a href="{{ path('serie_create') }}"> create a new serie </a></li>
         <li> <a href="{{ path('season_create') }}"> create a season </a></li>
+
+            {% if is_granted("ROLE_ADMIN") %}
+                <li> <a href="{{ path('admin_main') }}"> Administrate </a></li>
+
+            {% endif %}
+            <li> <a href="{{ path('app_logout') }}"> LogOut ({{ app.user.firstname }}) </a></li>
+            {% else %}
+                <li> <a href="{{ path('app_login') }}"> login</a></li>
+                <li> <a href="{{ path('app_register') }}"> register </a></li>
+
+        {% endif %}
+
+
+
 
     </ul>
 

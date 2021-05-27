@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Serie;
 use App\Form\SerieType;
+use App\ManageEntity\UpdateEntity;
 use App\Repository\SerieRepository;
+use App\Upload\SerieImage;
 use Container0kof7Lt\getMaker_Renderer_FormTypeRendererService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -61,7 +64,7 @@ class SerieController extends AbstractController
     /**
      * @Route("/series/create/", name="serie_create")
      */
-    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, UpdateEntity $updateEntity, SerieImage $image): Response
     {
         $serie = new Serie();
         $serieForm = $this->createForm(SerieType::class, $serie);
@@ -69,10 +72,28 @@ class SerieController extends AbstractController
 
         $serieForm->handleRequest($request);
 
+      //  $file = $serieForm->get('poster')->getData(); // recuperer info
+        //dd($file);
+
         if($serieForm->isSubmitted() && $serieForm->isValid())
-        {
-            $entityManager->persist($serie);
-            $entityManager->flush();
+        {//
+           //  $serie->setVote('9.5'); // test
+
+           // $entityManager->persist($serie);
+            //$entityManager->flush();
+
+            $file = $serieForm->get('poster')->getData();
+
+            // ci-dessous, la variable file est identifiée comme etant un uploadfile
+
+            if($file)
+            {
+                //$newFileName = $serie->getName().'-'.uniqid().'.'.$file->guessExtension(); // renommage du nom du fichier à sauvegarder
+               $directory = $this->getParameter('upload_posters_series_dir');
+               $image->save($file, $serie,$directory);
+                //$serie->setPoster($newFileName);
+            }
+            $updateEntity->save($serie); // a la place des lignes du dessus, exemple utilisation d'un service
             $this->addFlash("success", "serie added ! ");
 
             return $this->redirectToRoute("serie_detail", ['id'=>$serie->getId()]);

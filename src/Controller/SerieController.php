@@ -11,6 +11,7 @@ use Container0kof7Lt\getMaker_Renderer_FormTypeRendererService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,7 +44,7 @@ class SerieController extends AbstractController
     }
 
     /**
-     * @Route("/series/detail/{id}", name="serie_detail")
+     * @Route("/series/detail/{id}", name="serie_detail", requirements= {"page"="\d+"})
      * @param $id
      * @return Response
      */
@@ -62,7 +63,7 @@ class SerieController extends AbstractController
     }
 
     /**
-     * @Route("/series/create/", name="serie_create")
+     * @Route("/series/create", name="serie_create")
      */
     public function create(Request $request, EntityManagerInterface $entityManager, UpdateEntity $updateEntity, SerieImage $image): Response
     {
@@ -157,5 +158,39 @@ class SerieController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('main_home');
+    }
+
+
+    /**
+     * @Route("/series/detail/ajax-like", name="serie_ajax_like")
+     *
+     * @return Response
+     */
+    public function likeOrDislike(Request  $request, EntityManagerInterface  $entityManager, SerieRepository $serieRepository): Response
+    {
+        // recuperation des données de ma requete
+       $data = json_decode($request->getContent());
+       $serie_id = $data->serie_id;
+       $like = $data->like;
+
+       // instance de la serie en fonction de l'id
+       $serie = $serieRepository->find($serie_id);
+
+       if($like==0)
+       {
+           $serie->setNbLike($serie->getNbLike()-1);
+       }
+
+       else{
+           $serie->setNbLike($serie->getNbLike() +1);
+       }
+
+       // crud
+       $entityManager->persist($serie);
+       $entityManager->flush();
+
+       return new JsonResponse(['likes'=>$serie->getNbLike()]); // renvoi objet json
+
+
     }
 }

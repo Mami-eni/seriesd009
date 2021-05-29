@@ -105,6 +105,11 @@ class Serie
      */
     private $seasons;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $nbLike;
+
     public function __construct()
     {
         $this->seasons = new ArrayCollection();
@@ -294,6 +299,18 @@ class Serie
                 $season->setSerie(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNbLike(): ?int
+    {
+        return $this->nbLike;
+    }
+
+    public function setNbLike(int $nbLike): self
+    {
+        $this->nbLike = $nbLike;
 
         return $this;
     }

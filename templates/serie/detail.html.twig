@@ -6,6 +6,13 @@
     <div>  {{ serie.name }}</div>
     <div>  {{ serie.popularity }}</div>
     <div>  {{ serie.firstAirDate|date('Y-m-d') }}</div>
+    <div>
+    <button class = "like_button" value="1"> Like </button>
+        <button class = "like_button" value="0"> disLike </button>
+    </div>
+
+    <div>  nombre de likes:  <span id="nbreLike">  {{ serie.nbLike}}  </span> </div>
+    <input type="hidden" id = "serie-id" value = {{ serie.id }}>
 
     <section>
         <h3> Seasons </h3>
